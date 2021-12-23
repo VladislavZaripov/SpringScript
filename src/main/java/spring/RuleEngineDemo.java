@@ -1,0 +1,33 @@
+package spring;
+
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.support.GenericXmlApplicationContext;
+
+public class RuleEngineDemo {
+    private static Logger logger = LoggerFactory.getLogger(RuleEngineDemo.class);
+
+    public static void main(String... args) throws Exception {
+        GenericXmlApplicationContext ctx = new GenericXmlApplicationContext();
+        ctx.load("classpath:app-context.xml");
+        ctx.refresh();
+
+        SingerService singerService = ctx.getBean("singerService", SingerService.class);
+
+        Singer singer = new Singer();
+        singer.setId(1L);
+        singer.setFirstName("John");
+        singer.setLastName("Mayer");
+        singer.setBirthDate(new DateTime(1977, 10, 16, 0, 0, 0, 0));
+        singerService.applyRule(singer);
+        logger.info("Singer: " + singer);
+
+        System.in.read();
+
+        singerService.applyRule(singer);
+        logger.info("Singer: " + singer);
+
+        ctx.close();
+    }
+}
